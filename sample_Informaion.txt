@@ -1,0 +1,27 @@
+
+signup :
+{
+  "name" :"Alireza",
+  "age" :19,
+  "family" :"Fotohi",
+  "address" :"Iran Tehran",
+  "userName" : "afotohi759",
+  "email" : "afotohi19@gmail.com",
+  "password" : "Testing193",
+  "phoneNumber" : "09384337898",
+  "confirmPassword" : "Testing193"
+  
+}
+
+
+signin :
+{
+  "email" : "afotohi20@gmail.com",
+  "password" : "Testing193"
+}
+
+change password : 
+{
+  "oldPassword" : "Testing19",
+  "newPassword" : "Testing2311"
+}
