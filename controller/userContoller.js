@@ -1,7 +1,7 @@
 const userModel = require("../module/userModel");
 const loginSchema = require("../validation/loginSchema");
 const signupSchema = require("../validation/signupSchema");
-const {hashString,comphash, genToken} = require("../module/encrypt");
+const { hashString, comphash, genToken } = require("../module/encrypt");
 const yup = require('yup');
 
 
@@ -26,56 +26,66 @@ const signup = async (req, res, next) => {
                 userName,
                 email,
                 phoneNumber,
-                password : hashString(password),
+                password: hashString(password),
             }
         );
         res.status(201).json({ success: true, message: "user created" });
     } catch (error) {
-        next({status : 400 , message : error.errors || error.message});
+        next({ status: 400, message: error.errors || error.message });
     };
 };
 
 
-const login = async (req,res,next) => {
+const login = async (req, res, next) => {
     try {
-        const {email,password} = req.body;
-        await loginSchema.validate({email,password},{abortEarly : false});
-    
-    const user = await userModel.findOne({email},{createdAt : 0,updatedAt:0,__v:0});
-    if (!user) throw { message: "User not found" };
-    if (!comphash(password,user.password)) throw ({ message: "password is incorrect" });
+        const { email, password } = req.body;
+        await loginSchema.validate({ email, password }, { abortEarly: false });
 
-    user.token = genToken(user.userName);
-    user.save();
-    const userSend = JSON.parse(JSON.stringify(user));
-    delete userSend.password;
-    res.json(userSend);
-        res.status(201).json({success : true , message : "login successful" });
+        const user = await userModel.findOne({ email }, { createdAt: 0, updatedAt: 0, __v: 0 });
+        if (!user) throw { message: "User not found" };
+        if (!comphash(password, user.password)) throw ({ message: "password is incorrect" });
+
+        user.token = genToken(user.userName);
+        user.save();
+        const userSend = JSON.parse(JSON.stringify(user));
+        delete userSend.password;
+        res.json(userSend);
+        res.status(201).json({ success: true, message: "login successful" });
     } catch (error) {
-        next({status : 400 , message : error.errors || error.message});
+        next({ status: 400, message: error.errors || error.message });
     }
 };
 
-const changePassword = async(req,res,next) => {
+const changePassword = async (req, res, next) => {
     try {
-        const {oldPassword,newPassword} =req.body;
-        const user = await userModel.findOne({userName : req.userName},{createdAt : 0,updatedAt:0,__v:0});
-        if (!user) throw {message : "User not Defined"};
+        const { oldPassword, newPassword } = req.body;
+        const user = await userModel.findOne({ userName: req.userName }, { createdAt: 0, updatedAt: 0, __v: 0 });
+        if (!user) throw { message: "User not Defined" };
 
-        if (!comphash(oldPassword,user.password)) throw {message : "old password incorect :("};
-        
+        if (!comphash(oldPassword, user.password)) throw { message: "old password incorect :(" };
+
         await yup.string().matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/).required().validate(newPassword);
-        
-        await userModel.updateOne({ _id: user._id }, { password: hashString(newPassword) }); // به‌روزرسانی رمز
 
-        res.status(200).json({success : true , message: "Password changed Successfuly :)"})
+        await userModel.updateOne({ _id: user._id }, { password: hashString(newPassword) });
+
+        res.status(200).json({ success: true, message: "Password changed Successfuly :)" })
     } catch (error) {
-        next({status : 400 , message : error.errors || error.message});
+        next({ status: 400, message: error.errors || error.message });
 
     }
-  
+
 };
 
+const deleteAcount = async (req, res, next) => {
+    try {
+        const result = await userModel.deleteOne({ userName: req.userName });
 
-  
-module.exports = {signup,login,changePassword};
+        if (!result.deletedCount) throw { message: "User deleted Unsuccessfull" };
+        res.status(200).json({status:200, success: true, message: "user deleted Successfully", });
+
+    } catch (error) {
+        next({ status: 400, message: error.errors || error.message });
+    }
+};
+
+module.exports = { signup, login, changePassword, deleteAcount };
