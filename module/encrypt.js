@@ -14,11 +14,12 @@ const comphash = (date, hashString) => {
 
 
 const genToken = (payload) => {
-    return jwt.sign({date : payload,expireIn : "1y"}, process.env.secret_Key);
+    return jwt.sign({date : payload,expireIn : "1y"}, process.env.SECRET_KEY);
 };
 
 const compToken = (payload) => {
-    return jwt.verify(payload, process.env.secret_Key);
+    return jwt.verify(payload, process.env.SECRET_KEY);
+    
 };
 
 

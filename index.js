@@ -10,7 +10,7 @@ mongoose.connect("mongodb://localhost:27017/SnapFoodDelivery", { useNewUrlParser
   .then(() => {
     console.log("Connected to Database");
   })
-  .catch((err) => {
+  .catch((err) => { 
     console.log(err);
   });
 

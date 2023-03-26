@@ -2,6 +2,7 @@ const userModel = require("../module/userModel");
 const loginSchema = require("../validation/loginSchema");
 const signupSchema = require("../validation/signupSchema");
 const {hashString,comphash, genToken} = require("../module/encrypt");
+const yup = require('yup');
 
 
 
@@ -48,7 +49,7 @@ const login = async (req,res,next) => {
     user.save();
     const userSend = JSON.parse(JSON.stringify(user));
     delete userSend.password;
-   
+    res.json(userSend);
         res.status(201).json({success : true , message : "login successful" });
     } catch (error) {
         next({status : 400 , message : error.errors || error.message});
@@ -64,7 +65,9 @@ const changePassword = async(req,res,next) => {
         if (!comphash(oldPassword,user.password)) throw {message : "old password incorect :("};
         
         await yup.string().matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/).required().validate(newPassword);
- 
+        
+        await userModel.updateOne({ _id: user._id }, { password: hashString(newPassword) }); // به‌روزرسانی رمز
+
         res.status(200).json({success : true , message: "Password changed Successfuly :)"})
     } catch (error) {
         next({status : 400 , message : error.errors || error.message});
@@ -74,6 +77,5 @@ const changePassword = async(req,res,next) => {
 };
 
 
-
-
+  
 module.exports = {signup,login,changePassword};

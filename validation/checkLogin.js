@@ -1,13 +1,14 @@
-const compToken = require('../module/encrypt');
+const {compToken} = require('../module/encrypt');
 
 const checkLogin = (req,res,next) => {
     try {
         const user = compToken(req.headers.authorization.slice(7));
-        req.userName = user.data;
+        req.userName = user.date;
         next();
     } catch (error) {
-        next({status : 400,message : error.message || error.errors});
+        next({status : 401,message : "Please Login"});
     }
 };
+
 
 module.exports = checkLogin;
