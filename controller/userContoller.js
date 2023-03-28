@@ -12,12 +12,13 @@ const signup = async (req, res, next) => {
         const { name, family, age, address, userName, email, password, confirmPassword, phoneNumber } = req.body;
 
         await signupSchema.validate({ name, family, age, address, userName, email, password, confirmPassword, phoneNumber }, { abortEarly: false });
-
+        //حالت معمول 
         // if (password != confirmPassword) throw { message: "password Not Equel" };
         // if (await userModel.findOne({ userName })) throw { message: "user already exists" };
         // if (await userModel.findOne({ email })) throw { message: "email already exists" };
         // if (await userModel.findOne({ phoneNumber })) throw { message: "phone number already exists" };
-
+        
+        //حالت بهینه
         const existingUser = await userModel.findOne({
           $or: [{ userName }, { email }, { phoneNumber }],
         }, { userName: 1, email: 1, phoneNumber: 1 });
