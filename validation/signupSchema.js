@@ -1,5 +1,6 @@
 const yup = require('yup');
 
+//بررسی اطلاعات کاربر جهت ثبت نام 
 const signupSchema = yup.object().shape({
     name : yup.string().min(2),
     family : yup.string().min(4),
