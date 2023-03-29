@@ -23,7 +23,7 @@ const compToken = (payload) => {
     return jwt.verify(payload, process.env.SECRET_KEY);
 
 };
-//ساخت نام بر اساس تاریخ برای فایل
+//ساخت پوشه بر اساس تاریخ برای فایل
 const uploadFilePath = () => {
     const year = new Date().getFullYear();
     const month = new Date().getMonth() + 1;
