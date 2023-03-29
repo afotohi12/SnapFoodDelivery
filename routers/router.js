@@ -6,8 +6,11 @@ const app = require('express').Router();
 app.use("/user", userRouter);
 
 //مسیر رستوران ها
-app.use("/resturant", resturantRouter);
+//app.use("/resturant", resturantRouter);
 
+const restaurantRouter = require('../routers/resturant');
+
+app.use('/resturant', resturantRouter);
 
 //نمایش تمام خطاها به صورت یکجا
 app.use(errorRes);

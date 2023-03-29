@@ -8,7 +8,7 @@ const { isValidObjectId } = require("mongoose");
 
 const register = (req,res,next) => {
     try {
-        
+        console.log("test");
     } catch (error) {
         
     }
