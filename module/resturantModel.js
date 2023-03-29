@@ -18,6 +18,6 @@ const resSchema = new Schema({
     { timestamps: true }
 );
 
-const resModel = model("res", resSchema);
+const resModel = model("resturant", resSchema);
 module.exports = resModel;
 
