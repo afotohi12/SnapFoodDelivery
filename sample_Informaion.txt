@@ -13,7 +13,6 @@ signup :
   
 }
 
-
 signin :
 {
   "email" : "afotohi20@gmail.com",

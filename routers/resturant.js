@@ -1,12 +1,12 @@
-const resturantRouter = require('express').Router();
+const {register} = require("../controller/resController");
+const checkLogin = require("../validation/checkLogin");
+const upload = require("../module/multer");
+const imageValidation = require("../validation/fileValidation");
 
-resturantRouter.post("/register",(req,res) => {
-    res.send("resturant register");
-});
+const resturantRouter = require("express").Router();
 
-resturantRouter.post("/login" , (req,res) => {
-    res.send("resturantLogin")
-});
+resturantRouter.post("/register",register);
+//resturantRouter.post("/login",login);
 
 
 

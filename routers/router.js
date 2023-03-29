@@ -1,6 +1,6 @@
 const userRouter = require('./user');
 const resturantRouter = require('./resturant');
-const {notFound, errorRes} = require('../module/erroeHandler');
+const {errorRes} = require('../module/erroeHandler');
 const app = require('express').Router();
 //مسیر کاربران
 app.use("/user", userRouter);
