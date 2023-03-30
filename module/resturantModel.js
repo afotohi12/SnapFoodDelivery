@@ -7,13 +7,14 @@ const resSchema = new Schema({
     ownerFamily : { type: String},
     resAddress: { type: String },
     resUserName :{ type: String },
-    resEmail: { type: String },
-    resPassword: { type: String },
+    email: { type: String },
+    password: { type: String },
     resPhoneNumber: { type: String },
     resType : { type: String },
-    resJavaz : { type: String },
+    resJavazNum : { type: String },
     token : { type: String },
     avatar : { type : String,default : "http://127.0.0.1:3000/default/images.jpeg"},
+    isRes : {type: Boolean , require : true , default : true}
 },
     { timestamps: true }
 );

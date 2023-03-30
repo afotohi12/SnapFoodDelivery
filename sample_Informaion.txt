@@ -34,11 +34,19 @@ signup
   "resAddress": "Iran Tabriz",
   "resUserName": "ghaza1231",
   "resJavazNum": "1234323456765",
-  "resEmail": "afotohi16771@gmail.com",
-  "resPassword": "Testing193",
-  "resConfirmPassword": "Testing193",
+  "email": "afotohi16771@gmail.com",
+  "password": "Testing193",
+  "ConfirmPassword": "Testing193",
   "resPhoneNumber": "09653438765",
   "resType" : "Fast food"
   
 }
 
+insertMenu
+{
+  "foodName" :"koobideh",
+  "price" : "200000",
+  "explain" :"maid with meet and sous",
+  "score" : 5,
+  "category" :"sonaty"
+}

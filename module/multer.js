@@ -9,6 +9,7 @@ const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadFilePath());
   },
+  
   //بدست آوردن پسوند فایل 
   filename: function (req, file, cb) {
     const type = path.extname(file.originalname);

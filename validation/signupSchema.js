@@ -11,7 +11,7 @@ const signupSchema = yup.object().shape({
     password : yup.string().matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/).required(),
     confirmPassword : yup.string().required().oneOf([yup.ref('password'), null],"پسوردهای وارد شده برابر نیستند"),
     phoneNumber : yup.string().matches(/09[\d/0-9]/,"شماره تماس معتبر نیست!").required()
-
+    
 
 });
 
