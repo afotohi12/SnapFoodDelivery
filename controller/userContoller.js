@@ -1,4 +1,5 @@
 const userModel = require("../module/userModel");
+const resModel = require("../module/resturantModel");
 const loginSchema = require("../validation/loginSchema");
 const signupSchema = require("../validation/signupSchema");
 const { hashString, comphash, genToken } = require("../module/encrypt");
@@ -44,8 +45,8 @@ const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     await loginSchema.validate({ email, password }, { abortEarly: false });
-
     const user = await userModel.findOne({ email }, { createdAt: 0, updatedAt: 0, __v: 0 });
+
     if (!user) throw { message: "User not found" };
     if (!comphash(password, user.password)) throw ({ message: "password is incorrect" });
 
@@ -80,17 +81,17 @@ const logout = async (req, res, next) => {
 //تغییر کلمه عبور
 const changePassword = async (req, res, next) => {
   try {
-    const { oldPassword, newPassword } = req.body;
+    const { oldpassword, newpassword } = req.body;
     const user = await userModel.findOne({ userName: req.userName }, { createdAt: 0, updatedAt: 0, __v: 0 });
     if (!user) throw { message: "User not Found :(" };
 
-    if (!comphash(oldPassword, user.password)) throw { message: "old password incorect :(" };
+    if (!comphash(oldpassword, user.password)) throw { message: "old password incorect :(" };
 
-    await yup.string().matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/).required().validate(newPassword);
+    await yup.string().matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/).required().validate(newpassword);
 
-    await userModel.updateOne({ _id: user._id }, { password: hashString(newPassword) });
+    await userModel.updateOne({ _id: user._id }, { password: hashString(newpassword) });
 
-    res.status(200).json({ success: true, message: "Password changed Successfuly :)" })
+    res.status(200).json({ success: true, message: "password changed Successfuly :)" })
   } catch (error) {
     next({ status: 400, message: error.errors || error.message });
 
@@ -154,4 +155,50 @@ const getUsers = async (req, res, next) => {
   }
 };
 
-module.exports = { signup, login,logout, changePassword, deleteAcount, changeProfile, getProfile, getUser, getUsers };
+
+//تایید ادرس ایمیل 
+const verifyEmail = async (req,res,next) =>{
+    try {
+      console.log("verifyEmail");
+    } catch (error) {
+      
+    }
+};
+
+//فراموشی رمز عبور 
+const forgetPassword = async (req,res,next) => {
+    try {
+      console.log("forgetPassword");
+
+      // var nodemailer = require('nodemailer');
+
+      // var transporter = nodemailer.createTransport({
+      //   service: 'gmail',
+      //   auth: {
+      //     user: 'youremail@gmail.com',
+      //     pass: 'yourpassword'
+      //   }
+      // });
+      
+      // var mailOptions = {
+      //   from: 'youremail@gmail.com',
+      //   to: 'myfriend@yahoo.com',
+      //   subject: 'Sending Email using Node.js',
+      //   text: 'That was easy!'
+      // };
+      
+      // transporter.sendMail(mailOptions, function(error, info){
+      //   if (error) {
+      //     console.log(error);
+      //   } else {
+      //     console.log('Email sent: ' + info.response);
+      //   }
+      // });
+
+    } catch (error) {
+      next({status : 400 , message : error.errors})
+     }
+};
+
+
+module.exports = { signup, login,logout, changePassword, deleteAcount, changeProfile, getProfile, getUser, getUsers,forgetPassword,verifyEmail };

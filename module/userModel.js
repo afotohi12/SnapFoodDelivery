@@ -1,6 +1,4 @@
 const { Schema, model } = require("mongoose");
-//const path = require("path");
-//const { string } = require("yup");
 
 //ساخت اطلاعات کاربر در پایگاه داده
 const userSchema = new Schema({
@@ -14,6 +12,7 @@ const userSchema = new Schema({
     phoneNumber: { type: String },
     token : { type: String },
     avatar : { type : String,default : "http://127.0.0.1:3000/default/images.jpeg"},
+    isRes : {type: Boolean , require : true , default : false}
 },
     { timestamps: true }
 );

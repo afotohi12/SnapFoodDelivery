@@ -20,6 +20,7 @@ const imageValidation = (req,res,next) =>{
     next();
     } catch (error) {
         next({status : 400,message : error.errors || error.message});
+        
     }
 };
 
