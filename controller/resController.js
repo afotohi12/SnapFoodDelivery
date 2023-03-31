@@ -138,31 +138,29 @@ const uploadfoodImag = async (req,res,next) => {
     try {
 
         const { id } = req.params;
-        console.log(id);
         if (!isValidObjectId(id)) throw { message: "id is wrong" };
         const food = await menuModel.findOne({ _id: id });
         if (!food) throw { message: "food not found" };
-        
+        //استخراج آیدی رستوران
         const token = req.headers.authorization.split(" ")[1];
         const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
         const resturant = await resModel.findOne({ resUserName: decodedToken.date }, { createdAt: 0, updatedAt: 0, __v: 0 });
+                     
         if(!resturant) throw {message : "Resturan User not found"};
-        
-        if(!food.resId === resturant._id) throw {message : "This menu not for this resturant"};
-
+        if(!(food.resId === resturant.id)) throw {message : "This menu not for this resturant"};
+             
+       //استخراج آدرس عکس آپلود شده 
         const image = req.file;
         const parts = image.path.split("/");
         parts.shift();
         const output = parts.join("/");
 
         await menuModel.updateOne({ _id: food._id }, { foodImag : "http://127.0.0.1:3000/" + output});
-
-      res.status(200).json({success : true , message : "food picture updated successfully"});
+        res.status(200).json({success : true , message : "food picture updated successfully"});
     } catch (error) {
         next({status: 400, message: error.errors || error.message})
     }
 }
-
 
 
 //خروج کاربر رستوران
