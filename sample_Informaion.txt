@@ -50,3 +50,7 @@ insertMenu
   "score" : 5,
   "category" :"sonaty"
 }
+
+
+signin 
+{}

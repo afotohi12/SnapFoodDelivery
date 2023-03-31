@@ -6,7 +6,7 @@ const imageValidation = (req,res,next) =>{
         const image = req.file;
         const type = image.mimetype.split("/")[1];
         const size = image.size;
-        
+    
         if (!["jpg","png"].includes(type)) {
         fs.unlinkSync(req.file.path);
         throw {status:400 ,message: "Invalid image type , you selected image type is: " + type +", should be select png or jpg"};

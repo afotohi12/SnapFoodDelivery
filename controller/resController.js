@@ -7,6 +7,7 @@ const { hashString, comphash, genToken } = require("../module/encrypt");
 const yup = require('yup');
 const jwt = require("jsonwebtoken");
 const { isValidObjectId } = require("mongoose");
+const { all } = require("../routers/resturant");
 
 
 
@@ -73,12 +74,11 @@ const insertMenu = async (req,res,next) => {
         const token = req.headers.authorization.split(" ")[1];
         const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
         const user = await resModel.findOne({ resUserName: decodedToken.date }, { createdAt: 0, updatedAt: 0, __v: 0 });
-
+     
         if(menu) throw {message : "Food Name Is Exist !"};
         if(!["fastFood","sonaty","sobhaneh"].includes(category)) throw {message : " you Should Select between {fastFood,sonaty,sobhaneh}"}
         
         await menuModel.create({foodName,price,explain,score,category,resId : user._id});
-
         res.status(200).json({success : true , message : "Menu Created Successfully"});
 
     } catch (error) {
@@ -118,8 +118,15 @@ const uploadAvatar = async (req,res,next) => {
 }
 
 //لیست غذاهای رستوران 
-const resMenu = async (req,res,next) => {
+const resAllMenu = async (req,res,next) => {
     try {
+        const token = req.headers.authorization.split(" ")[1];
+        const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+        const user = await resModel.findOne({resUserName : decodedToken.date}, { createdAt: 0, updatedAt: 0, __v: 0 });
+        if(!user) throw {message : "User not found"};
+
+        const allMenu = await menuModel.find({resId : user._id}, { createdAt: 0, updatedAt: 0, __v: 0 });
+        res.status(200).json({success : true , message : allMenu});
         
     } catch (error) {
         next({status: 400, message: error.errors || error.message})
@@ -129,9 +136,50 @@ const resMenu = async (req,res,next) => {
 //اضافه و یا بروزرسانی عکس غذا
 const uploadfoodImag = async (req,res,next) => {
     try {
+
+        const { id } = req.params;
+        console.log(id);
+        if (!isValidObjectId(id)) throw { message: "id is wrong" };
+        const food = await menuModel.findOne({ _id: id });
+        if (!food) throw { message: "food not found" };
         
+        const token = req.headers.authorization.split(" ")[1];
+        const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+        const resturant = await resModel.findOne({ resUserName: decodedToken.date }, { createdAt: 0, updatedAt: 0, __v: 0 });
+        if(!resturant) throw {message : "Resturan User not found"};
+        
+        if(!food.resId === resturant._id) throw {message : "This menu not for this resturant"};
+
+        const image = req.file;
+        const parts = image.path.split("/");
+        parts.shift();
+        const output = parts.join("/");
+
+        await menuModel.updateOne({ _id: food._id }, { foodImag : "http://127.0.0.1:3000/" + output});
+
+      res.status(200).json({success : true , message : "food picture updated successfully"});
     } catch (error) {
         next({status: 400, message: error.errors || error.message})
     }
 }
-module.exports = { register, login ,insertMenu,resMenu,uploadfoodImag,uploadAvatar};
+
+
+
+//خروج کاربر رستوران
+const logout = async (req,res,next) => {
+    try {
+        const token = req.headers.authorization.split(" ")[1];
+        const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+    
+        await resModel.updateOne({resUserName : decodedToken.date},{token : ""});
+        res.status(200).json({ success: true, message: "User logged out" });
+      } catch (error) {
+        if (error.name === "TokenExpiredError") {
+          return res.status(401).json({ success: false, message: "User Not Login" });
+        }
+        next({ status: 400, message: error.message });
+      }
+};
+
+
+module.exports = { register, login ,insertMenu,resAllMenu,uploadfoodImag,uploadAvatar,logout};
