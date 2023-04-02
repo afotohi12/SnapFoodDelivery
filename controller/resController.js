@@ -75,6 +75,21 @@ const getProfile = async (req, res, next) => {
     }
   };
 
+  
+
+//بروزرسانی اطلاعات رستوران 
+const changeProfile = async (req, res, next) => {
+    try {
+        const { resName,ownerName,ownerFamily,resAddress } = req.body;
+        const result = await resModel.updateOne({ username: req.username }, { resName,ownerName,ownerFamily,resAddress });
+        if (!result.modifiedCount) throw { message: "resturant profile update failed" };
+        res.status(200).json({ status: 200, success: true, message: " profile updated successfully" });
+    
+      } catch (error) {
+        next({ starus: 400, message: error.errors || error.message });
+      }
+}
+
 //ورود اطلاعات غذا
 const insertMenu = async (req, res, next) => {
     try {
@@ -284,4 +299,5 @@ const forgetPassword = async (req,res,next) => {
 
 
 
-module.exports = { register, login,forgetPassword,getUsers,changePassword,verifyEmail,getProfile, deleteAccount, insertMenu, AllMenu, uploadfoodImag, uploadAvatar, logout };
+module.exports = { register, login,forgetPassword,getUsers,changeProfile,changePassword,
+    verifyEmail,getProfile, deleteAccount, insertMenu, AllMenu, uploadfoodImag, uploadAvatar, logout };

@@ -115,7 +115,7 @@ const changeProfile = async (req, res, next) => {
   try {
     const { name, family, age, address, phoneNumber } = req.body;
     const result = await userModel.updateOne({ username: req.username }, { age, address, name, family, phoneNumber });
-    if (!result.modifiedCount) throw { message: " profile updare failed" };
+    if (!result.modifiedCount) throw { message: " profile update failed" };
     res.status(200).json({ status: 200, success: true, message: " profile updated successfully" });
 
   } catch (error) {

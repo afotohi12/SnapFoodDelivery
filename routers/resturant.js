@@ -1,4 +1,4 @@
-const {register,login,logout,verifyEmail,getProfile,getUsers,forgetPassword,changePassword,deleteAccount,insertMenu,AllMenu,uploadfoodImag,uploadAvatar} = require("../controller/resController");
+const {register,login,logout,verifyEmail,getProfile,changeProfile,getUsers,forgetPassword,changePassword,deleteAccount,insertMenu,AllMenu,uploadfoodImag,uploadAvatar} = require("../controller/resController");
 const checkLogin = require("../validation/checkLogin");
 const upload = require("../module/multer");
 const imageValidation = require("../validation/fileValidation");
@@ -9,6 +9,7 @@ resturantRouter.post("/login",login);
 resturantRouter.put("/logout",checkLogin,logout);
 resturantRouter.post("/verifyEmail",checkLogin,verifyEmail);
 resturantRouter.post("/getProfile",checkLogin,getProfile);
+resturantRouter.post("/changeProfile",checkLogin,changeProfile);
 resturantRouter.get("/getUsers",getUsers);
 resturantRouter.post("/forgetPassword",forgetPassword);
 resturantRouter.post("/changePassword",checkLogin,changePassword);
@@ -19,7 +20,6 @@ resturantRouter.post("/uploadAvatar",upload.single('avatar'),checkLogin,imageVal
 resturantRouter.post("/menu/uploadfoodImag/:id",upload.single('foodImag'),checkLogin,imageValidation,uploadfoodImag);
 
 
-// router.post("/changeProfile",checkLogin,changeProfile);
 
 
 
