@@ -53,4 +53,7 @@ insertMenu
 
 
 signin 
-{}
+{
+    "email": "afotohi16771@gmail.com",
+  "password": "Testing193",
+}
