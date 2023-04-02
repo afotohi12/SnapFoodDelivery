@@ -7,7 +7,6 @@ const { hashString, comphash, genToken } = require("../module/encrypt");
 const yup = require('yup');
 const jwt = require("jsonwebtoken");
 const { isValidObjectId } = require("mongoose");
-const { all } = require("../routers/resturant");
 
 
 
@@ -64,43 +63,54 @@ const login = async (req, res, next) => {
     }
 };
 
+//بررسی لاگین بودن کاربر 
+const getProfile = async (req, res, next) => {
+    try {
+      const resturant = await resModel.findOne({ resUserName: req.userName }, { createdAt: 0, updatedAt: 0, __v: 0 });
+      
+      if (!resturant) throw { message: "user not found" };
+      res.status(200).json(resturant);
+    } catch (error) {
+      next({ status: 400, message: error.message });
+    }
+  };
 
 //ورود اطلاعات غذا
-const insertMenu = async (req,res,next) => {
+const insertMenu = async (req, res, next) => {
     try {
-        const {foodName,price,explain,score,category} = req.body;
-        await menuSchema.validate({foodName,price,explain,score,category},{abortEarly : false});
-        const menu = await menuModel.findOne({foodName}, { createdAt: 0, updatedAt: 0, __v: 0 });
+        const { foodName, price, explain, score, category } = req.body;
+        await menuSchema.validate({ foodName, price, explain, score, category }, { abortEarly: false });
+        const menu = await menuModel.findOne({ foodName }, { createdAt: 0, updatedAt: 0, __v: 0 });
         const token = req.headers.authorization.split(" ")[1];
         const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
         const user = await resModel.findOne({ resUserName: decodedToken.date }, { createdAt: 0, updatedAt: 0, __v: 0 });
-     
-        if(menu) throw {message : "Food Name Is Exist !"};
-        if(!["fastFood","sonaty","sobhaneh"].includes(category)) throw {message : " you Should Select between {fastFood,sonaty,sobhaneh}"}
-        
-        await menuModel.create({foodName,price,explain,score,category,resId : user._id});
-        res.status(200).json({success : true , message : "Menu Created Successfully"});
+
+        if (menu) throw { message: "Food Name Is Exist !" };
+        if (!["fastFood", "sonaty", "sobhaneh"].includes(category)) throw { message: " you Should Select between {fastFood,sonaty,sobhaneh}" }
+
+        await menuModel.create({ foodName, price, explain, score, category, resId: user._id });
+        res.status(200).json({ success: true, message: "Menu Created Successfully" });
 
     } catch (error) {
-        next({status: 400, message: error.errors || error.message})
+        next({ status: 400, message: error.errors || error.message })
     }
 }
 
 //آپدیت عکس رستوران
-const uploadAvatar = async (req,res,next) => {
+const uploadAvatar = async (req, res, next) => {
     try {
-        
-        const token = req.headers.authorization.split(" ")[1];
-        const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
-        const resturant = await resModel.findOne({ resUserName: decodedToken.date }, { createdAt: 0, updatedAt: 0, __v: 0 });
-        if(!resturant) throw {message : "User not found"};
-        
+
+        //const token = req.headers.authorization.split(" ")[1];
+        //const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+        const resturant = await resModel.findOne({ resUserName: req.userName }, { createdAt: 0, updatedAt: 0, __v: 0 });
+        if (!resturant) throw { message: "User not found" };
+
         const image = req.file;
         const parts = image.path.split("/");
         parts.shift();
         const output = parts.join("/");
 
-        await resModel.updateOne({ _id: resturant._id }, { avatar : "http://127.0.0.1:3000/" + output});
+        await resModel.updateOne({ _id: resturant._id }, { avatar: "http://127.0.0.1:3000/" + output });
         //حذف عکس قبلی 
         // const fs = require('fs');
         // fs.unlink("../" +image.destination + image.filename, (err) => {
@@ -110,31 +120,31 @@ const uploadAvatar = async (req,res,next) => {
         //     console.log("Delete File successfully.");
         // });
 
-        res.status(200).json({success : true , message : "Avatar updated successfully"});
+        res.status(200).json({ success: true, message: "Avatar updated successfully" });
 
     } catch (error) {
-        next({status: 400, message: error.errors || error.message});
+        next({ status: 400, message: error.errors || error.message });
     }
 }
 
 //لیست غذاهای رستوران 
-const resAllMenu = async (req,res,next) => {
+const AllMenu = async (req, res, next) => {
     try {
-        const token = req.headers.authorization.split(" ")[1];
-        const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
-        const user = await resModel.findOne({resUserName : decodedToken.date}, { createdAt: 0, updatedAt: 0, __v: 0 });
-        if(!user) throw {message : "User not found"};
+        //const token = req.headers.authorization.split(" ")[1];
+        //const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+        const user = await resModel.findOne({ resUserName: req.userName }, { createdAt: 0, updatedAt: 0, __v: 0 });
+        if (!user) throw { message: "User not found" };
 
-        const allMenu = await menuModel.find({resId : user._id}, { createdAt: 0, updatedAt: 0, __v: 0 });
-        res.status(200).json({success : true , message : allMenu});
-        
+        const allMenu = await menuModel.find({ resId: user._id }, { createdAt: 0, updatedAt: 0, __v: 0 });
+        res.status(200).json({ success: true, message: allMenu });
+
     } catch (error) {
-        next({status: 400, message: error.errors || error.message})
+        next({ status: 400, message: error.errors || error.message })
     }
 };
 
 //اضافه و یا بروزرسانی عکس غذا
-const uploadfoodImag = async (req,res,next) => {
+const uploadfoodImag = async (req, res, next) => {
     try {
 
         const { id } = req.params;
@@ -142,42 +152,136 @@ const uploadfoodImag = async (req,res,next) => {
         const food = await menuModel.findOne({ _id: id });
         if (!food) throw { message: "food not found" };
         //استخراج آیدی رستوران
-        const token = req.headers.authorization.split(" ")[1];
-        const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
-        const resturant = await resModel.findOne({ resUserName: decodedToken.date }, { createdAt: 0, updatedAt: 0, __v: 0 });
-                     
-        if(!resturant) throw {message : "Resturan User not found"};
-        if(!(food.resId === resturant.id)) throw {message : "This menu not for this resturant"};
-             
-       //استخراج آدرس عکس آپلود شده 
+        //const token = req.headers.authorization.split(" ")[1];
+        //const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+        const resturant = await resModel.findOne({ resUserName: req.userName }, { createdAt: 0, updatedAt: 0, __v: 0 });
+
+        if (!resturant) throw { message: "Resturan User not found" };
+        if (!(food.resId === resturant.id)) throw { message: "This menu not for this resturant" };
+
+        //استخراج آدرس عکس آپلود شده 
         const image = req.file;
         const parts = image.path.split("/");
         parts.shift();
         const output = parts.join("/");
 
-        await menuModel.updateOne({ _id: food._id }, { foodImag : "http://127.0.0.1:3000/" + output});
-        res.status(200).json({success : true , message : "food picture updated successfully"});
+        await menuModel.updateOne({ _id: food._id }, { foodImag: "http://127.0.0.1:3000/" + output });
+        res.status(200).json({ success: true, message: "food picture updated successfully" });
     } catch (error) {
-        next({status: 400, message: error.errors || error.message})
+        next({ status: 400, message: error.errors || error.message });
     }
 }
 
 
 //خروج کاربر رستوران
-const logout = async (req,res,next) => {
+const logout = async (req, res, next) => {
     try {
-        const token = req.headers.authorization.split(" ")[1];
-        const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
-    
-        await resModel.updateOne({resUserName : decodedToken.date},{token : ""});
+        //const token = req.headers.authorization.split(" ")[1];
+        //const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+
+        await resModel.updateOne({ resUserName: req.userName }, { token: "" });
         res.status(200).json({ success: true, message: "User logged out" });
-      } catch (error) {
+    } catch (error) {
         if (error.name === "TokenExpiredError") {
-          return res.status(401).json({ success: false, message: "User Not Login" });
+            return res.status(401).json({ success: false, message: "User Not Login" });
         }
-        next({ status: 400, message: error.message });
+        next({ status: 400, message: error.errors || error.message });
+    }
+};
+
+//جدف جساب کاربری 
+const deleteAccount = async (req, res, next) => {
+    try {
+        //دلیل حذف پرسیده شود و در جدولی ذخیره شود اطلاعات رستوران
+
+        //--
+        const result = await resModel.deleteOne({ resUserName: req.userName });
+        if (!result.deletedCount) throw { message: "user delete unsuccessfully " };
+        res.status(200).json({ status: 200, success: true, message: "user deleted Successfully", });
+
+        //تمام منو های غذایی مربوط به این رستوران حذف گردد
+
+        //--
+    } catch (error) {
+        next({ status: 400, message: error.errors || error.message });
+    }
+}
+
+//تمام کاربرانی که از این رستوران خرید انجام داده اند
+const getUsers = async (req,res,next) => {
+    try {
+        const users = await menuModel.find({resId : req.userName}, { createdAt: 0, updatedAt: 0, __v: 0 });
+        res.status(200).json(users);
+      } catch (error) {
+        next({ message: error.message });
       }
 };
 
+//تغییر رمز عبور کاربری رستوران 
+const changePassword = async (req, res,next) => {
+    try {
+        const { oldpassword, newpassword } = req.body;
+        const resturant = await resModel.findOne({ resUserName: req.userName }, { createdAt: 0, updatedAt: 0, __v: 0 });
+        if (!resturant) throw { message: "User not Found :(" };
+    
+        if (!comphash(oldpassword, resturant.password)) throw { message: "old password incorect :(" };
+    
+        await yup.string().matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/).required().validate(newpassword);
+    
+        await resModel.updateOne({ _id: resturant._id }, { password: hashString(newpassword) });
+    
+        res.status(200).json({ success: true, message: "password changed Successfuly :)" })
+      } catch (error) {
+        next({ status: 400, message: error.errors || error.message });
+    
+      }
+    
+}
 
-module.exports = { register, login ,insertMenu,resAllMenu,uploadfoodImag,uploadAvatar,logout};
+//تایید ادرس ایمیل 
+const verifyEmail = async (req,res,next) =>{
+    try {
+      console.log("verifyEmail");
+    } catch (error) {
+      
+    }
+};
+
+//فراموشی رمز عبور 
+const forgetPassword = async (req,res,next) => {
+    try {
+      console.log("forgetPassword");
+
+      // var nodemailer = require('nodemailer');
+
+      // var transporter = nodemailer.createTransport({
+      //   service: 'gmail',
+      //   auth: {
+      //     user: 'youremail@gmail.com',
+      //     pass: 'yourpassword'
+      //   }
+      // });
+      
+      // var mailOptions = {
+      //   from: 'youremail@gmail.com',
+      //   to: 'myfriend@yahoo.com',
+      //   subject: 'Sending Email using Node.js',
+      //   text: 'That was easy!'
+      // };
+      
+      // transporter.sendMail(mailOptions, function(error, info){
+      //   if (error) {
+      //     console.log(error);
+      //   } else {
+      //     console.log('Email sent: ' + info.response);
+      //   }
+      // });
+
+    } catch (error) {
+      next({status : 400 , message : error.errors})
+     }
+};
+
+
+
+module.exports = { register, login,forgetPassword,getUsers,changePassword,verifyEmail,getProfile, deleteAccount, insertMenu, AllMenu, uploadfoodImag, uploadAvatar, logout };

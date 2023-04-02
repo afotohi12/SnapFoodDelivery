@@ -10,7 +10,7 @@ router.post("/signup",signup);
 router.post("/login",login);
 router.put("/logout",checkLogin,logout);
 router.post("/changePassword",checkLogin,changePassword);
-router.delete("/deleteAccount",checkLogin,deleteAcount)
+router.delete("/deleteAccount",checkLogin,deleteAcount);
 router.post("/changeProfile",checkLogin,changeProfile);
 router.post("/getProfile",checkLogin,getProfile);
 router.post("/verifyEmail",checkLogin,verifyEmail);

@@ -1,4 +1,4 @@
-const {register,login,logout,insertMenu,resAllMenu,uploadfoodImag,uploadAvatar} = require("../controller/resController");
+const {register,login,logout,verifyEmail,getProfile,getUsers,forgetPassword,changePassword,deleteAccount,insertMenu,AllMenu,uploadfoodImag,uploadAvatar} = require("../controller/resController");
 const checkLogin = require("../validation/checkLogin");
 const upload = require("../module/multer");
 const imageValidation = require("../validation/fileValidation");
@@ -7,9 +7,21 @@ const resturantRouter = require("express").Router();
 resturantRouter.post("/register",register);
 resturantRouter.post("/login",login);
 resturantRouter.put("/logout",checkLogin,logout);
+resturantRouter.post("/verifyEmail",checkLogin,verifyEmail);
+resturantRouter.post("/getProfile",checkLogin,getProfile);
+resturantRouter.get("/getUsers",getUsers);
+resturantRouter.post("/forgetPassword",forgetPassword);
+resturantRouter.post("/changePassword",checkLogin,changePassword);
+resturantRouter.delete("/deleteAccount",checkLogin,deleteAccount);
 resturantRouter.post("/insertMenu",checkLogin,insertMenu);
-resturantRouter.get("/resAllMenu",checkLogin,resAllMenu);
+resturantRouter.get("/AllMenu",checkLogin,AllMenu);
 resturantRouter.post("/uploadAvatar",upload.single('avatar'),checkLogin,imageValidation,uploadAvatar);
 resturantRouter.post("/menu/uploadfoodImag/:id",upload.single('foodImag'),checkLogin,imageValidation,uploadfoodImag);
+
+
+// router.post("/changeProfile",checkLogin,changeProfile);
+
+
+
 
 module.exports = resturantRouter;

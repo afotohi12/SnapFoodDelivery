@@ -125,8 +125,8 @@ const changeProfile = async (req, res, next) => {
 //بررسی لاگین بودن کاربر 
 const getProfile = async (req, res, next) => {
   try {
-    const user = await userModel.findOne({ username: req.username }, { password: 0, updatedAt: 0, createdAt: 0, __v: 0 }
-    );
+    const user = await userModel.findOne({ username: req.username }, { password: 0, updatedAt: 0, createdAt: 0, __v: 0 });
+    
     if (!user) throw { message: "user not found" };
     res.status(200).json(user);
   } catch (error) {
