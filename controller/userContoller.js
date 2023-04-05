@@ -6,7 +6,7 @@ const { hashString, comphash, genToken } = require("../module/encrypt");
 const yup = require('yup');
 const jwt = require("jsonwebtoken");
 const { isValidObjectId } = require("mongoose");
-
+const passwordGenerator = require("../module/passGen");
 
 //ثبت نام کاربر 
 const signup = async (req, res, next) => {
@@ -23,17 +23,20 @@ const signup = async (req, res, next) => {
     const existingUser = await userModel.findOne({ $or: [{ userName }, { email }, { phoneNumber }], }, { userName: 1, email: 1, phoneNumber: 1 });
 
     if (existingUser) {
-      if (existingUser.userName === userName) {throw new Error("Username already exists");
+      if (existingUser.userName === userName) {
+        throw new Error("Username already exists");
       }
 
-      if (existingUser.email === email) {throw new Error("Email already exists");
+      if (existingUser.email === email) {
+        throw new Error("Email already exists");
       }
 
-      if (existingUser.phoneNumber === phoneNumber) {throw new Error("Phone number already exists");
+      if (existingUser.phoneNumber === phoneNumber) {
+        throw new Error("Phone number already exists");
       }
     }
 
-    await userModel.create({name,family,age,address,userName,email,phoneNumber,password: hashString(password),});
+    await userModel.create({ name, family, age, address, userName, email, phoneNumber, password: hashString(password), });
     res.status(201).json({ success: true, message: "user created" });
   } catch (error) {
     next({ status: 400, message: error.errors || error.message });
@@ -67,7 +70,7 @@ const logout = async (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
 
-    await userModel.updateOne({userName : decodedToken.date},{token : ""});
+    await userModel.updateOne({ userName: decodedToken.date }, { token: "" });
     res.status(200).json({ success: true, message: "User logged out" });
   } catch (error) {
     if (error.name === "TokenExpiredError") {
@@ -126,7 +129,7 @@ const changeProfile = async (req, res, next) => {
 const getProfile = async (req, res, next) => {
   try {
     const user = await userModel.findOne({ username: req.username }, { password: 0, updatedAt: 0, createdAt: 0, __v: 0 });
-    
+
     if (!user) throw { message: "user not found" };
     res.status(200).json(user);
   } catch (error) {
@@ -157,48 +160,59 @@ const getUsers = async (req, res, next) => {
 
 
 //تایید ادرس ایمیل 
-const verifyEmail = async (req,res,next) =>{
-    try {
-      console.log("verifyEmail");
-    } catch (error) {
-      
-    }
+const verifyEmail = async (req, res, next) => {
+  try {
+    console.log("verifyEmail");
+  } catch (error) {
+
+  }
 };
 
 //فراموشی رمز عبور 
-const forgetPassword = async (req,res,next) => {
-    try {
-      console.log("forgetPassword");
+const forgetPassword = async (req, res, next) => {
+  try {
+    console.log("forgetPassword");
 
-      // var nodemailer = require('nodemailer');
+    // var nodemailer = require('nodemailer');
 
-      // var transporter = nodemailer.createTransport({
-      //   service: 'gmail',
-      //   auth: {
-      //     user: 'youremail@gmail.com',
-      //     pass: 'yourpassword'
-      //   }
-      // });
-      
-      // var mailOptions = {
-      //   from: 'youremail@gmail.com',
-      //   to: 'myfriend@yahoo.com',
-      //   subject: 'Sending Email using Node.js',
-      //   text: 'That was easy!'
-      // };
-      
-      // transporter.sendMail(mailOptions, function(error, info){
-      //   if (error) {
-      //     console.log(error);
-      //   } else {
-      //     console.log('Email sent: ' + info.response);
-      //   }
-      // });
+    // var transporter = nodemailer.createTransport({
+    //   service: 'gmail',
+    //   auth: {
+    //     user: 'youremail@gmail.com',
+    //     pass: 'yourpassword'
+    //   }
+    // });
 
-    } catch (error) {
-      next({status : 400 , message : error.errors})
-     }
+    // var mailOptions = {
+    //   from: 'youremail@gmail.com',
+    //   to: 'myfriend@yahoo.com',
+    //   subject: 'Sending Email using Node.js',
+    //   text: 'That was easy!'
+    // };
+
+    // transporter.sendMail(mailOptions, function(error, info){
+    //   if (error) {
+    //     console.log(error);
+    //   } else {
+    //     console.log('Email sent: ' + info.response);
+    //   }
+    // });
+
+  } catch (error) {
+    next({ status: 400, message: error.errors })
+  }
 };
 
 
-module.exports = { signup, login,logout, changePassword, deleteAcount, changeProfile, getProfile, getUser, getUsers,forgetPassword,verifyEmail };
+
+//ساخت رمز عبور تصادفی 
+const passGen = async (req, res, next) => {
+  try {
+    const password = await passwordGenerator();
+    res.status(200).json(password);
+  } catch (error) {
+    next({ status: 400, message: error.message || error.errors });
+  }
+};
+
+module.exports = { signup, login, logout, passGen, changePassword, deleteAcount, changeProfile, getProfile, getUser, getUsers, forgetPassword, verifyEmail };
