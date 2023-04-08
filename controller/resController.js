@@ -7,7 +7,7 @@ const { hashString, comphash, genToken } = require("../module/encrypt");
 const yup = require('yup');
 const jwt = require("jsonwebtoken");
 const { isValidObjectId } = require("mongoose");
-
+const passwordGenerator = require("../module/passGen");
 
 
 //ثبت نام رستوران 
@@ -297,7 +297,16 @@ const forgetPassword = async (req,res,next) => {
      }
 };
 
+//ساخت رمز عبور تصادفی 
+const passGen = async (req, res, next) => {
+    try {
+      const password = await passwordGenerator();
+      res.status(200).json(password);
+    } catch (error) {
+      next({ status: 400, message: error.message || error.errors });
+    }
+  };
 
 
-module.exports = { register, login,forgetPassword,getUsers,changeProfile,changePassword,
+module.exports = { register, login,forgetPassword,passGen,getUsers,changeProfile,changePassword,
     verifyEmail,getProfile, deleteAccount, insertMenu, AllMenu, uploadfoodImag, uploadAvatar, logout };
