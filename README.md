@@ -1,16 +1,17 @@
 Progress .....80%........
 # SnapFoodBackend
-node.js Project 
 
 -------------------------------
 SnappFood Backend with JavaScript and Express.js
 ------------------------------
 Tech Stack
+
 Server: Node.js, Express
 
 DataBase: MongoDB
 -------------------------------
  dependencies
+
     bcrypt
     dotenv
     express
@@ -22,6 +23,7 @@ DataBase: MongoDB
     nodemon
 -------------------------------
 Run Locally
+
 Clone the project
 
   git clone git@github.com:afotohi12/SnapFoodDelivery.git
