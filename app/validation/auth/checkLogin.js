@@ -1,4 +1,4 @@
-const { compToken } = require('../module/encrypt');
+const { compToken } = require('../../utils/encrypt');
 //بررسی لاگین بودن کاربر
 const checkLogin = (req, res, next) => {
     try {

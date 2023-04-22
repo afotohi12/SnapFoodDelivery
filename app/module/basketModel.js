@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 
 //جدول سبد خرید کاربر
-const logBasketSchema = new Schema({
+const basketSchema = new Schema({
     resId    : {type: String },
     userId   : {type: String },
     menuId : {type: String},
@@ -13,4 +13,4 @@ const logBasketSchema = new Schema({
 );
 
 
-module.exports = logBasketSchema;
+module.exports = basketSchema;

@@ -1,13 +1,13 @@
 const resModel = require("../module/resturantModel");
 const menuModel = require("../module/menuModel");
-const loginSchema = require("../validation/loginSchema");
-const resSignupSchema = require("../validation/resSignupSchema");
-const menuSchema = require("../validation/menuSchema");
-const { hashString, comphash, genToken } = require("../module/encrypt");
+const loginSchema = require("../validation/schema/loginSchema");
+const resSignupSchema = require("../validation/schema/resSignupSchema");
+const menuSchema = require("../validation/schema/menuSchema");
+const { hashString, comphash, genToken } = require("../utils/encrypt");
 const yup = require('yup');
 const jwt = require("jsonwebtoken");
 const { isValidObjectId } = require("mongoose");
-const passwordGenerator = require("../module/passGen");
+const passwordGenerator = require("../utils/passGen");
 
 
 //ثبت نام رستوران 
@@ -15,6 +15,8 @@ const register = async (req, res, next) => {
     try {
         const { resName, ownerName, ownerFamily, resAddress, resUserName, resJavazNum, email, password, ConfirmPassword, resPhoneNumber, resType } = req.body;
         await resSignupSchema.validate({ resName, ownerName, ownerFamily, resAddress, resUserName, resJavazNum, email, password, ConfirmPassword, resPhoneNumber, resType }, { abortErly: false });
+
+        if (password != ConfirmPassword) throw { message: "password Not Equel" };
 
         const existRest = await resModel.findOne({ $or: [{ resName }, { resUserName }, { resJavazNum }, { email }, { resPhoneNumber }] });
         if (existRest) {
