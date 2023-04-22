@@ -1,20 +1,22 @@
 const userModel = require("../module/userModel");
 const resModel = require("../module/resturantModel");
-const loginSchema = require("../validation/loginSchema");
-const signupSchema = require("../validation/signupSchema");
-const { hashString, comphash, genToken } = require("../module/encrypt");
+const loginSchema = require("../validation/schema/loginSchema");
+const signupSchema = require("../validation/schema/signupSchema");
+const { hashString, comphash, genToken } = require("../utils/encrypt");
 const yup = require('yup');
 const jwt = require("jsonwebtoken");
 const { isValidObjectId } = require("mongoose");
-const passwordGenerator = require("../module/passGen");
+const passwordGenerator = require("../utils/passGen");
 
 //ثبت نام کاربر 
 const signup = async (req, res, next) => {
   try {
     const { name, family, age, address, userName, email, password, confirmPassword, phoneNumber } = req.body;
     await signupSchema.validate({ name, family, age, address, userName, email, password, confirmPassword, phoneNumber }, { abortEarly: false });
+    
+    if (password != confirmPassword) throw { message: "password Not Equel" };
+    
     //حالت معمول 
-    // if (password != confirmPassword) throw { message: "password Not Equel" };
     // if (await userModel.findOne({ userName })) throw { message: "user already exists" };
     // if (await userModel.findOne({ email })) throw { message: "email already exists" };
     // if (await userModel.findOne({ phoneNumber })) throw { message: "phone number already exists" };

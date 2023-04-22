@@ -3,21 +3,20 @@ const path = require('path');
 const router = require('./routers/router');
 const express = require('express');
 const app = express();
-const mongoose = require('mongoose');
 
 app.use(express.json());
 
 //دسترسی دادن پوشه فایل به کاربر
 app.use(express.static(path.join(__dirname, "files")));
 
-//اتصال به بانک اطلاعاتی 
-mongoose.connect("mongodb://localhost:27017/SnapFoodDelivery", { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log("Connected to Database");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+//server running ....
+module.exports =  () => {
+  const port = process.env.App_Port ;
+  console.log(port);
+  app.listen(port, () => {
+  console.log(`app listening on port: ${port}`);
+});
+};
 
 //مسیریابی
 app.use(router);
@@ -31,9 +30,6 @@ app.get("/", (req, res) => {
 app.use((req, res, next) => {
   res.status(404).send("Sorry, can't find Address!");
 });
-
-//نشان دادن راه اندازی درست سرور
-app.listen("3000", () => { console.log("server run on port 3000"); })
 
 
 

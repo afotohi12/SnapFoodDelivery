@@ -1,7 +1,7 @@
 const {signup,login,logout,passGen,changePassword,deleteAcount,changeProfile,getProfile,getUser,getUsers,forgetPassword,verifyEmail} = require("../controller/userContoller");
-const checkLogin = require("../validation/checkLogin");
-const upload = require("../module/multer");
-const imageValidation = require("../validation/fileValidation");
+const checkLogin = require("../validation/auth/checkLogin");
+const upload = require("../utils/multer");
+const imageValidation = require("../validation/auth/fileValidation");
 //const signupSchema = require("../validation/signupSchema");
 
 const router = require("express").Router();

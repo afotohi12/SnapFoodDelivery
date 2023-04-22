@@ -1,7 +1,7 @@
 const {register,login,logout,verifyEmail,getProfile,changeProfile,getUsers,forgetPassword,passGen,changePassword,deleteAccount,insertMenu,AllMenu,uploadfoodImag,uploadAvatar} = require("../controller/resController");
-const checkLogin = require("../validation/checkLogin");
-const upload = require("../module/multer");
-const imageValidation = require("../validation/fileValidation");
+const checkLogin = require("../validation/auth/checkLogin");
+const upload = require("../utils/multer");
+const imageValidation = require("../validation/auth/fileValidation");
 const resturantRouter = require("express").Router();
 
 resturantRouter.post("/register",register);

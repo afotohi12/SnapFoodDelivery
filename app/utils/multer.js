@@ -1,6 +1,6 @@
 const path = require("path");
 const multer = require("multer");
-const { uploadFilePath } = require("../module/encrypt");
+const { uploadFilePath } = require("./encrypt");
 
 
 
