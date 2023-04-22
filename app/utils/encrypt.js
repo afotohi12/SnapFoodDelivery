@@ -3,27 +3,27 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const path = require('path');
 
-//رمزنگاری اطلاعات
+//Encryption
 const hashString = (str) => {
     const salt = bcrypt.genSaltSync(10);
     return bcrypt.hashSync(str, salt);
 };
-//مقایسه اطلاعات رمزنگاری شده 
+//Compare Hash String
 const comphash = (date, hashString) => {
     return bcrypt.compareSync(date, hashString);
 
 };
 
-//ساخت توکن
+//biuld Token 
 const genToken = (payload) => {
     return jwt.sign({ date: payload, expireIn: "1y" }, process.env.SECRET_KEY);
 };
-//بررسی توکن 
+//Check Token 
 const compToken = (payload) => {
     return jwt.verify(payload, process.env.SECRET_KEY);
 
 };
-//ساخت پوشه بر اساس تاریخ برای فایل
+//Mkdir for Upload file `
 const uploadFilePath = () => {
     const year = new Date().getFullYear();
     const month = new Date().getMonth() + 1;

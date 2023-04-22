@@ -10,7 +10,7 @@ const { isValidObjectId } = require("mongoose");
 const passwordGenerator = require("../utils/passGen");
 
 
-//ثبت نام رستوران 
+//Resturant signUp 
 const register = async (req, res, next) => {
     try {
         const { resName, ownerName, ownerFamily, resAddress, resUserName, resJavazNum, email, password, ConfirmPassword, resPhoneNumber, resType } = req.body;
@@ -44,7 +44,7 @@ const register = async (req, res, next) => {
     }
 };
 
-//ورود رستوران
+//Resturant Login
 const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
@@ -65,7 +65,7 @@ const login = async (req, res, next) => {
     }
 };
 
-//بررسی لاگین بودن کاربر 
+//Check Login 
 const getProfile = async (req, res, next) => {
     try {
       const resturant = await resModel.findOne({ resUserName: req.userName }, { createdAt: 0, updatedAt: 0, __v: 0 });
@@ -79,7 +79,7 @@ const getProfile = async (req, res, next) => {
 
   
 
-//بروزرسانی اطلاعات رستوران 
+//Resturant Profile Edit 
 const changeProfile = async (req, res, next) => {
     try {
         const { resName,ownerName,ownerFamily,resAddress } = req.body;
@@ -92,7 +92,7 @@ const changeProfile = async (req, res, next) => {
       }
 }
 
-//ورود اطلاعات غذا
+//Insert menu item 
 const insertMenu = async (req, res, next) => {
     try {
         const { foodName, price, explain, score, category } = req.body;
@@ -113,7 +113,7 @@ const insertMenu = async (req, res, next) => {
     }
 }
 
-//آپدیت عکس رستوران
+//Resturant Avatar 
 const uploadAvatar = async (req, res, next) => {
     try {
 
@@ -144,7 +144,7 @@ const uploadAvatar = async (req, res, next) => {
     }
 }
 
-//لیست غذاهای رستوران 
+//Show Resturant All Menu 
 const AllMenu = async (req, res, next) => {
     try {
         //const token = req.headers.authorization.split(" ")[1];
@@ -160,7 +160,7 @@ const AllMenu = async (req, res, next) => {
     }
 };
 
-//اضافه و یا بروزرسانی عکس غذا
+//Food Avatar 
 const uploadfoodImag = async (req, res, next) => {
     try {
 
@@ -176,7 +176,7 @@ const uploadfoodImag = async (req, res, next) => {
         if (!resturant) throw { message: "Resturan User not found" };
         if (!(food.resId === resturant.id)) throw { message: "This menu not for this resturant" };
 
-        //استخراج آدرس عکس آپلود شده 
+        //Upload avatar address 
         const image = req.file;
         const parts = image.path.split("/");
         parts.shift();
@@ -190,7 +190,7 @@ const uploadfoodImag = async (req, res, next) => {
 }
 
 
-//خروج کاربر رستوران
+//Restaurant LogOut 
 const logout = async (req, res, next) => {
     try {
         //const token = req.headers.authorization.split(" ")[1];
@@ -206,7 +206,7 @@ const logout = async (req, res, next) => {
     }
 };
 
-//جدف جساب کاربری 
+//Resturant aCcount Delete 
 const deleteAccount = async (req, res, next) => {
     try {
         //دلیل حذف پرسیده شود و در جدولی ذخیره شود اطلاعات رستوران
@@ -224,7 +224,7 @@ const deleteAccount = async (req, res, next) => {
     }
 }
 
-//تمام کاربرانی که از این رستوران خرید انجام داده اند
+//all users buy from this resturant 
 const getUsers = async (req,res,next) => {
     try {
         const users = await menuModel.find({resId : req.userName}, { createdAt: 0, updatedAt: 0, __v: 0 });
@@ -234,7 +234,7 @@ const getUsers = async (req,res,next) => {
       }
 };
 
-//تغییر رمز عبور کاربری رستوران 
+//resturant Change Password 
 const changePassword = async (req, res,next) => {
     try {
         const { oldpassword, newpassword } = req.body;
@@ -255,7 +255,7 @@ const changePassword = async (req, res,next) => {
     
 }
 
-//تایید ادرس ایمیل 
+//Email verification
 const verifyEmail = async (req,res,next) =>{
     try {
       console.log("verifyEmail");
@@ -264,7 +264,7 @@ const verifyEmail = async (req,res,next) =>{
     }
 };
 
-//فراموشی رمز عبور 
+//Forget Password 
 const forgetPassword = async (req,res,next) => {
     try {
       console.log("forgetPassword");
@@ -299,7 +299,7 @@ const forgetPassword = async (req,res,next) => {
      }
 };
 
-//ساخت رمز عبور تصادفی 
+//biuld random password generator
 const passGen = async (req, res, next) => {
     try {
       const password = await passwordGenerator();
