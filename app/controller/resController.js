@@ -8,6 +8,7 @@ const yup = require('yup');
 const jwt = require("jsonwebtoken");
 const { isValidObjectId } = require("mongoose");
 const passwordGenerator = require("../utils/passGen");
+const purchaseModel = require("../module/purchesModel");
 
 
 //Resturant signUp 
@@ -309,6 +310,19 @@ const passGen = async (req, res, next) => {
     }
   };
 
+//all payment from this resturant 
+const allPayment = async (req, res, next) => {
+    try {
+        const {id} = req.params; 
+        if(!isValidObjectId) throw {message : "Wrong Id"}
+       const allPayment = await purchaseModel.find({resId : id});
+       if(!allPayment) throw {message : "Nothing To Show "};
+       res.status(200).json(allPayment);
+    } catch (error) {
+        next({status : 400 , message : error.message || error.errors});
+    }
+};
+  
 
 module.exports = { register, login,forgetPassword,passGen,getUsers,changeProfile,changePassword,
-    verifyEmail,getProfile, deleteAccount, insertMenu, AllMenu, uploadfoodImag, uploadAvatar, logout };
+    verifyEmail,getProfile, deleteAccount,allPayment, insertMenu, AllMenu, uploadfoodImag, uploadAvatar, logout };

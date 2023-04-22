@@ -12,7 +12,6 @@ app.use(express.static(path.join(__dirname, "files")));
 //server running ....
 module.exports =  () => {
   const port = process.env.App_Port ;
-  console.log(port);
   app.listen(port, () => {
   console.log(`app listening on port: ${port}`);
 });

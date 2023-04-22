@@ -1,7 +1,6 @@
-Progress .............
-# SnapFoodDelivery
-My First node.js Project 
-
+Progress .....80%........
+# SnapFoodBackend
+node.js Project 
 
 -------------------------------
 SnappFood Backend with JavaScript and Express.js
@@ -10,8 +9,17 @@ Tech Stack
 Server: Node.js, Express
 
 DataBase: MongoDB
-
-DevOps: Github Actions
+-------------------------------
+ dependencies
+    bcrypt
+    dotenv
+    express
+    jsonwebtoken
+    mongoose
+    multer
+    nodemailer
+    yup
+    nodemon
 -------------------------------
 Run Locally
 Clone the project
@@ -25,4 +33,4 @@ Install dependencies
   npm install
 Start the server
 
-  npm run start
+  npm start

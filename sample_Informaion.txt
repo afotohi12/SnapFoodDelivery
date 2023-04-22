@@ -57,3 +57,22 @@ signin
     "email": "afotohi16771@gmail.com",
   "password": "Testing193",
 }
+
+-----------------------------------
+add purchase 
+{
+  "userId": "6421ce7a4ec1f62e6f3a4a26",
+  "resId":"642555cb61dca35f6f503d07",
+  "menuId": "642585731a147b9fae83a8af"   ,
+  "menuCount":"1"  ,
+  "price":  "1278700",
+  "paymentMethod": "card" ,
+  "bankName":  "BlueBank",
+  "payment":   "Successfull"
+  
+}
+
+------------------------------
+show from id 
+for example
+http://127.0.0.1:5000/resturant/allPayment/id

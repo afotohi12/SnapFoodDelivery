@@ -1,4 +1,4 @@
-const userRouter = require('./user');
+const userRouter = require('../routers/user');
 const resturantRouter = require('./resturant');
 const {errorRes} = require('../../app/utils/erroeHandler');
 const app = require('express').Router();

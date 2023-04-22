@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
-const { number } = require("yup");
+//const { number } = require("yup");
 
-//ساخت اطلاعات منو غذا در پایگاه داده
+//Create Food Menu 
 const menuSchema = new Schema({
     foodName : { type: String },
     price    : { type: String },
