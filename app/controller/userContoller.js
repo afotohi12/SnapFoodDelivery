@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const { isValidObjectId } = require("mongoose");
 const passwordGenerator = require("../utils/passGen");
 
-//ثبت نام کاربر 
+//Signup User 
 const signup = async (req, res, next) => {
   try {
     const { name, family, age, address, userName, email, password, confirmPassword, phoneNumber } = req.body;
@@ -45,7 +45,7 @@ const signup = async (req, res, next) => {
   };
 };
 
-//لاگین شدن کاربر
+//Login user 
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -66,7 +66,7 @@ const login = async (req, res, next) => {
   }
 };
 
-//خروج کاربر 
+//Logout user 
 const logout = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
@@ -83,7 +83,7 @@ const logout = async (req, res, next) => {
 };
 
 
-//تغییر کلمه عبور
+//user change Password 
 const changePassword = async (req, res, next) => {
   try {
     const { oldpassword, newpassword } = req.body;
@@ -103,7 +103,7 @@ const changePassword = async (req, res, next) => {
   }
 
 };
-//حذف اکانت کاربری
+//delete User 
 const deleteAcount = async (req, res, next) => {
   try {
     const result = await userModel.deleteOne({ userName: req.userName });
@@ -115,7 +115,7 @@ const deleteAcount = async (req, res, next) => {
     next({ status: 400, message: error.errors || error.message });
   }
 };
-//تغییر اطلاعات کاربری 
+//change Profile user 
 const changeProfile = async (req, res, next) => {
   try {
     const { name, family, age, address, phoneNumber } = req.body;
@@ -127,7 +127,7 @@ const changeProfile = async (req, res, next) => {
     next({ starus: 400, message: error.errors || error.message });
   }
 };
-//بررسی لاگین بودن کاربر 
+//Check User Login 
 const getProfile = async (req, res, next) => {
   try {
     const user = await userModel.findOne({ username: req.username }, { password: 0, updatedAt: 0, createdAt: 0, __v: 0 });
@@ -138,7 +138,7 @@ const getProfile = async (req, res, next) => {
     next({ status: 400, message: error.message });
   }
 };
-//به دست آوردن اطلاعات کاربر
+//User Profile 
 const getUser = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -150,7 +150,7 @@ const getUser = async (req, res, next) => {
     next({ message: error.message });
   }
 };
-//بدست آوردن اظلاعات تمام کاربران
+//All user Profile 
 const getUsers = async (req, res, next) => {
   try {
     const users = await userModel.find();
@@ -161,7 +161,7 @@ const getUsers = async (req, res, next) => {
 };
 
 
-//تایید ادرس ایمیل 
+//Email Verification 
 const verifyEmail = async (req, res, next) => {
   try {
     console.log("verifyEmail");
@@ -170,7 +170,7 @@ const verifyEmail = async (req, res, next) => {
   }
 };
 
-//فراموشی رمز عبور 
+//User Forget PassWord 
 const forgetPassword = async (req, res, next) => {
   try {
     console.log("forgetPassword");
@@ -207,7 +207,7 @@ const forgetPassword = async (req, res, next) => {
 
 
 
-//ساخت رمز عبور تصادفی 
+//biuld random password generator
 const passGen = async (req, res, next) => {
   try {
     const password = await passwordGenerator();
