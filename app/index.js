@@ -6,7 +6,7 @@ const app = express();
 
 app.use(express.json());
 
-//دسترسی دادن پوشه فایل به کاربر
+//Permition to files folder 
 app.use(express.static(path.join(__dirname, "files")));
 
 //server running ....
@@ -18,15 +18,15 @@ module.exports =  () => {
 });
 };
 
-//مسیریابی
+//routing
 app.use(router);
 
-//آدرس اصلی 
+//Main Address 
 app.get("/", (req, res) => {
   res.send("WellCome To Snap Food");
 });
 
-//پیدا نکردن آدرس وارد شده
+//unknown routes Address 
 app.use((req, res, next) => {
   res.status(404).send("Sorry, can't find Address!");
 });
