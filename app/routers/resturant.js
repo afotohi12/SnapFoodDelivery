@@ -1,5 +1,5 @@
 const {register,login,logout,verifyEmail,getProfile,changeProfile,getUsers,forgetPassword,passGen,changePassword,
-    allPayment,deleteAccount,insertMenu,AllMenu,uploadfoodImag,uploadAvatar} = require("../controller/resController");
+    allPayment,deleteAccount,insertMenu,AllMenu,uploadfoodImag,uploadAvatar,replyComment} = require("../controller/resController");
 const checkLogin = require("../validation/auth/checkLogin");
 const upload = require("../utils/multer");
 const imageValidation = require("../validation/auth/fileValidation");
@@ -15,6 +15,7 @@ resturantRouter.get("/getUsers",getUsers);
 resturantRouter.post("/forgetPassword",forgetPassword);
 resturantRouter.get("/passGen",passGen);
 resturantRouter.post("/changePassword",checkLogin,changePassword);
+resturantRouter.post("/replyComment/:id",checkLogin,replyComment);
 resturantRouter.delete("/deleteAccount",checkLogin,deleteAccount);
 resturantRouter.post("/insertMenu",checkLogin,insertMenu);
 resturantRouter.get("/AllMenu",checkLogin,AllMenu);

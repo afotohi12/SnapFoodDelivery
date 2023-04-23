@@ -18,9 +18,9 @@ const signup = async (req, res, next) => {
   try {
     const { name, family, age, address, userName, email, password, confirmPassword, phoneNumber } = req.body;
     await signupSchema.validate({ name, family, age, address, userName, email, password, confirmPassword, phoneNumber }, { abortEarly: false });
-    
+
     if (password != confirmPassword) throw { message: "password Not Equel" };
-    
+
     //حالت معمول 
     // if (await userModel.findOne({ userName })) throw { message: "user already exists" };
     // if (await userModel.findOne({ email })) throw { message: "email already exists" };
@@ -223,80 +223,123 @@ const passGen = async (req, res, next) => {
 };
 
 //buy order for User 
-const basket = async (req,res,next) => {
-    try {
-      const{userId,resId,menuId,menuCount,price,paymentMethod,bankName,payment} = req.body;
-      //Check Wrong Id 
-      const ids = [userId,resId,menuId];
-      ids.forEach((id)=> {
-        ValidObjectId(id);
-      });
+const basket = async (req, res, next) => {
+  try {
+    const { userId, resId, menuId, menuCount, price, paymentMethod, bankName, payment } = req.body;
+    //Check Wrong Id 
+    const ids = [userId, resId, menuId];
+    ids.forEach((id) => {
+      ValidObjectId(id);
+    });
 
-      function ValidObjectId(id){
-          if(!isValidObjectId(id)){
-            throw {message : "Wrong Id"};
-          };
+    function ValidObjectId(id) {
+      if (!isValidObjectId(id)) {
+        throw { message: "Wrong Id" };
       };
+    };
 
-      await purchesSchema.validate({ menuCount,price,paymentMethod,bankName,payment}, { abortEarly: false });
-      
-      const user = await userModel.findOne({ _id: userId });
-      if (!user) throw { message: "user not Found" };
+    await purchesSchema.validate({ menuCount, price, paymentMethod, bankName, payment }, { abortEarly: false });
 
-      const resturant = await resModel.findOne({_id : resId});
-      if(!resturant) throw {message : "Resturant Not Found "};
+    const user = await userModel.findOne({ _id: userId });
+    if (!user) throw { message: "user not Found" };
 
-      const menu = await menuModel.findOne({_id : menuId});
-      if(!menu) throw {message : "Menu Not Found "};
+    const resturant = await resModel.findOne({ _id: resId });
+    if (!resturant) throw { message: "Resturant Not Found " };
 
-      await purchaseModel.create({userId,resId,menuId,menuCount,price,paymentMethod,bankName,payment });
-      
-      res.status(201).json({success : true,message : "Order Successful"}); 
+    const menu = await menuModel.findOne({ _id: menuId });
+    if (!menu) throw { message: "Menu Not Found " };
 
-    } catch (error) {
-      next({status : 400 ,message : error.message || error.errors});
-    }    
+    await purchaseModel.create({ userId, resId, menuId, menuCount, price, paymentMethod, bankName, payment });
+
+    res.status(201).json({ success: true, message: "Order Successful" });
+
+  } catch (error) {
+    next({ status: 400, message: error.message || error.errors });
+  }
 };
 //All of menu user order return 
 const allmenu = async (req, res, next) => {
   try {
-      const {id} = req.params;
-      if (!id) throw { message: "Wrong Id "};
-      const allMenu = await menuModel.find({userId : id});
-      if(!allMenu) throw {message : "Nothing To Show "};
-      res.status(201).json(allMenu);
-    } catch (error) {
-      next({status : 400 ,message : error.message || error.errors});
-    }
+    const { id } = req.params;
+    //Check Wrong Id 
+    if (!isValidObjectId(id)) throw { message: "Wrong Id" };
+
+    const allMenu = await menuModel.find({ userId: id });
+    if (!allMenu) throw { message: "Nothing To Show " };
+    res.status(201).json(allMenu);
+  } catch (error) {
+    next({ status: 400, message: error.message || error.errors });
+  }
 };
 
 
 //All paying order for user 
-const allpurchase = async (req, res, next) =>{
-    try {
-      const {id} = req.params;
-      if (!id) throw { message: "Wrong Id "};
-      const allpurchase = await purchaseModel.find({userId : id});
-      if(!allpurchase) throw {message : "Nothing To Show "};
-      res.status(201).json(allpurchase);
-    } catch (error) {
-      next({status : 400 ,message : error.message || error.errors});
-    }
+const allpurchase = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    //Check Wrong Id 
+    if (!isValidObjectId(id)) throw { message: "Wrong Id" };
+    const allpurchase = await purchaseModel.find({ userId: id });
+    if (!allpurchase) throw { message: "Nothing To Show " };
+    res.status(201).json(allpurchase);
+  } catch (error) {
+    next({ status: 400, message: error.message || error.errors });
+  }
 };
 
 
 //all Comment from User 
-const allComment = async (req, res, next) =>{
+const allCommentUser = async (req, res, next) => {
   try {
-    const {id} = req.params;
-    if (!id) throw { message: "Wrong Id "};
-    const allComment = await commentModel.find({userId : id});
-    if(!allComment) throw {message : "Nothing To Show "};
+    const { id } = req.params;
+    //Check Wrong Id 
+    if (!isValidObjectId(id)) throw { message: "Wrong Id" };
+    const allComment = await commentModel.find({ userId: id });
+    if (!allComment) throw { message: "Nothing To Show " };
     res.status(201).json(allComment);
   } catch (error) {
-    next({status : 400 ,message : error.message || error.errors});
+    next({ status: 400, message: error.message || error.errors });
   }
 };
 
-module.exports = { signup, login, logout, passGen, changePassword,allmenu, deleteAcount, changeProfile, 
-                   getProfile,basket,allpurchase, getuser,allComment, alluser, forgetPassword, verifyEmail };
+
+//insert Comment from User 
+const insertComment = async (req, res, next) => {
+  try{
+  const { userId, resId, menuId, comment, score, accept } = req.body;
+  //Check Wrong Id 
+  const ids = [userId, resId, menuId];
+  ids.forEach((id) => {
+    ValidObjectId(id);
+  });
+
+  function ValidObjectId(id) {
+    if (!isValidObjectId(id)) {
+      throw { message: "Wrong Id" };
+    };
+  };
+
+  await commentSchema.validate({ comment, score, accept });
+
+  const user = await userModel.findOne({ _id: userId });
+  if (!user) throw { message: "user not Found" };
+
+  const resturant = await resModel.findOne({ _id: resId });
+  if (!resturant) throw { message: "Resturant Not Found " };
+
+  const menu = await menuModel.findOne({ _id: menuId });
+  if (!menu) throw { message: "Menu Not Found " };
+
+  await commentModel.create({userId,resId,menuId,comment,score,accept});
+   res.status(200).json({success : true, message : "Comnent insert successfully"});
+  }catch(error){
+    next({status : 400 , message : error.message || error.errors });
+  };
+
+};
+
+module.exports = {
+  signup, login, logout, passGen, changePassword, allmenu, deleteAcount, changeProfile,
+  getProfile, basket, allpurchase, getuser, allCommentUser, alluser, forgetPassword, verifyEmail,
+  insertComment
+};

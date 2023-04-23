@@ -4,6 +4,7 @@ const commentSchema = new Schema({
      userId : {type : String},
      resId : {type : String},
      menuId : {type : String},
+     replyId : {type : String},
      comment : {type : String},
      score : {type : Number},
      accept : {type : Boolean},

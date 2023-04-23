@@ -27,6 +27,7 @@ Run Locally
 Clone the project
 
   git clone git@github.com:afotohi12/SnapFoodDelivery.git
+  
 Go to the project directory
 
   cd SnapFoodDelivery

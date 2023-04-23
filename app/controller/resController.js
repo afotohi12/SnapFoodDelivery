@@ -1,5 +1,8 @@
 const resModel = require("../module/resturantModel");
 const menuModel = require("../module/menuModel");
+const userModel = require("../module/userModel");
+const commentModel = require("../module/commentModel");
+const commentSchema = require("../validation/schema/commentSchema");
 const loginSchema = require("../validation/schema/loginSchema");
 const resSignupSchema = require("../validation/schema/resSignupSchema");
 const menuSchema = require("../validation/schema/menuSchema");
@@ -323,6 +326,51 @@ const allPayment = async (req, res, next) => {
     }
 };
   
+//reply to user comments
+const replyComment = async (req, res, next) => {
+    try{
+        const commentExist = await commentModel.findOne({ _id: req.params.id  });
+        if (!commentExist) throw { message: "comment Not Exist " };
+        
+        //Check Wrong Id 
+        const ids = [commentExist.userId, commentExist.resId, commentExist.menuId];
+          ids.forEach((id) => {
+          ValidObjectId(id);
+        });
+      
+        function ValidObjectId(id) {
+          if (!isValidObjectId(id)) {
+            throw { message: "Wrong Id" };
+          };
+        };
+
+        //if(commentExist.resId !="") throw { message: "This comment has Not For your Resturant (--) cant reply this comment"};
+
+        const {comment} = req.body;
+        await commentSchema.validate({ comment});
+      
+        const user = await userModel.findOne({ _id: commentExist.userId });
+        if (!user) throw { message: "user not Found" };
+      
+        const resturant = await resModel.findOne({ _id: commentExist.resId });
+        if (!resturant) throw { message: "Resturant Not Found " };
+      
+        const menu = await menuModel.findOne({ _id: commentExist.menuId });
+        if (!menu) throw { message: "Menu Not Found " };
+
+        await commentModel.create({
+            userId:commentExist.userId,
+            resId:commentExist.resId,
+            menuId:commentExist.menuId,
+            replyId:req.params.id,
+            comment});
+         res.status(200).json({success : true, message : "Comnent insert successfully"});
+        }catch(error){
+          next({status : 400 , message : error.message || error.errors });
+        };
+      
+      };
 
 module.exports = { register, login,forgetPassword,passGen,getUsers,changeProfile,changePassword,
-    verifyEmail,getProfile, deleteAccount,allPayment, insertMenu, AllMenu, uploadfoodImag, uploadAvatar, logout };
+    verifyEmail,getProfile, deleteAccount,allPayment, insertMenu, AllMenu, uploadfoodImag, 
+    uploadAvatar, logout ,replyComment};
