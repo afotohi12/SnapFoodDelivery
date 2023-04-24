@@ -2,16 +2,20 @@ const resModel = require("../module/resturantModel");
 const menuModel = require("../module/menuModel");
 const userModel = require("../module/userModel");
 const commentModel = require("../module/commentModel");
+const purchaseModel = require("../module/purchesModel");
+const coponModel = require("../module/coponModel");
 const commentSchema = require("../validation/schema/commentSchema");
 const loginSchema = require("../validation/schema/loginSchema");
 const resSignupSchema = require("../validation/schema/resSignupSchema");
 const menuSchema = require("../validation/schema/menuSchema");
+const coponSchema = require("../validation/schema/coponSchema");
 const { hashString, comphash, genToken } = require("../utils/encrypt");
 const yup = require('yup');
 const jwt = require("jsonwebtoken");
 const { isValidObjectId } = require("mongoose");
 const passwordGenerator = require("../utils/passGen");
-const purchaseModel = require("../module/purchesModel");
+const CoponCodeGenerator = require("../utils/coponCodeGen");
+
 
 
 //Resturant signUp 
@@ -371,6 +375,57 @@ const replyComment = async (req, res, next) => {
       
       };
 
+
+//create coponCode Generate 
+const coponCode = async (req, res, next) => {
+    try {
+        const {alias,minBuy,percent,maxCount,endTime,price,count,resId,userId,menuId,category} = req.body;
+        await coponSchema.validate({alias,minBuy,percent,maxCount,endTime,price,count});
+        const randomValue = await CoponCodeGenerator();
+        const coponCodeGen = alias +randomValue;
+        while(true){
+                     const coponExist = await coponModel.findOne({coponCode : coponCodeGen});
+            if(!coponExist) break;
+            randomValue = await CoponCodeGenerator();
+            coponCodeGen = alias +randomValue;
+        
+        };
+        //user if not empty
+        if(userId){
+            const user = await userModel.findOne({ _id: userId });
+        if (!user) throw { message: "user not Found" };
+        }
+        const resturant = await resModel.findOne({ _id: resId });
+        if (!resturant) throw { message: "Resturant Not Found " };
+      
+        const menu = await menuModel.findOne({ _id: menuId });
+        if (!menu) throw { message: "Menu Not Found " };
+        
+        //if groupName is Exist 
+        const groupNameExist = await menuModel.findOne({ category}, { createdAt: 0, updatedAt: 0, __v: 0 });
+        if(!groupNameExist) throw {message : "GroupName Not Exist in Menu"};
+
+        await  coponModel.create({
+            resId  ,
+            coponCode: coponCodeGen,
+            minBuy ,
+            percent ,
+            maxCount ,
+            endTime ,
+            price ,
+            userId ,
+            count ,
+            menuId,
+            category,
+        });
+
+        res.status(200).json({success : true, message : "coponCode Created successfully"});
+    }catch (error) {
+        next({status : 400 , message : error.message || error.errors});
+    }      
+};
+
+
 module.exports = { register, login,forgetPassword,passGen,getUsers,changeProfile,changePassword,
     verifyEmail,getProfile, deleteAccount,allPayment, insertMenu, AllMenu, uploadfoodImag, 
-    uploadAvatar, logout ,replyComment};
+    uploadAvatar, logout ,replyComment,coponCode};

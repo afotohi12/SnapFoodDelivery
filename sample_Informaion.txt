@@ -76,3 +76,19 @@ add purchase
 show from id 
 for example
 http://127.0.0.1:5000/resturant/allPayment/id
+
+-----------------------------
+Create CoponCode 
+{
+  "alias":"COPON-",
+  "resId" : "642555cb61dca35f6f503d07",
+  "minBuy":"200000",
+  "percent":0,
+  "maxCount":"1",
+  "endTime":"2023-04-24",
+  "price":"10000",
+  "userId":"642305e5ee9ebf4eb08eb313",
+  "menuId":"642585731a147b9fae83a8af",
+  "category":"sonaty"
+  
+}

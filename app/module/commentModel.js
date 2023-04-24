@@ -1,5 +1,6 @@
 const {Schema , model} = require('mongoose');
 
+//Create comment model 
 const commentSchema = new Schema({
      userId : {type : String},
      resId : {type : String},
