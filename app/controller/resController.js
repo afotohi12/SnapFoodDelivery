@@ -425,7 +425,68 @@ const coponCode = async (req, res, next) => {
     }      
 };
 
+//Show Expire CoponCode 
+const showExPirecopon = async (req, res, next) => {
+    try{
+    const {id} = req.params;
+  
+    //Check Wrong Id 
+    if (!isValidObjectId(id)) throw { message: "Wrong Id" };
 
+    const resIdExist = await resModel.findOne({_id : id});
+    if(!resIdExist) throw {message : "Resturant Not Exist (`--`)"};
+
+    const today = new Date();
+    const date = today.toISOString().split('T')[0];
+        
+    //Sample One 
+        // const expCoponExist = await coponModel.find({ 
+    //     resId: id,
+    //     $and: [
+    //       { endTime: { $lte: date } },
+    //       { $expr: { $eq: [ "$count", "$maxCount" ] } }
+    //     ]
+    // });
+
+
+    const expCoponExist = await coponModel.find({ 
+        resId: id,
+        $or: [
+            {
+                endTime: { $lt: date }
+            },
+            {
+                $or: [
+                    { $expr: { $gte: ["$count", "$maxCount"] } }
+                ]
+            }
+        ] 
+    });
+
+    if(!expCoponExist) throw {message : "No Expire CoponCode To Show (--)"};
+
+    res.status(200).json(expCoponExist);
+    }catch(error){
+     next({status : 400 , message : error.message || error.errors});
+    };
+};
+
+
+//Show all copon code 
+const showAllCopn = async (req, res, next) => {
+try {
+    const {id} = req.params;
+    //Check Wrong Id 
+    if (!isValidObjectId(id)) throw { message: "Wrong Id" };
+
+    const allCopon = await coponModel.find({resId : id});
+    if(!allCopon) throw {message : "No CoponCode To Show (--)"};
+    res.status(200).json(allCopon);
+
+}catch (error) {
+    next({status : 400 , message : error.message || error.errors});
+}
+};
 module.exports = { register, login,forgetPassword,passGen,getUsers,changeProfile,changePassword,
     verifyEmail,getProfile, deleteAccount,allPayment, insertMenu, AllMenu, uploadfoodImag, 
-    uploadAvatar, logout ,replyComment,coponCode};
+    uploadAvatar, logout ,replyComment,coponCode,showExPirecopon,showAllCopn};
