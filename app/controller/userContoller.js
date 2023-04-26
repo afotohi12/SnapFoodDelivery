@@ -3,6 +3,7 @@ const purchaseModel = require("../module/purchesModel");
 const resModel = require("../module/resturantModel");
 const menuModel = require("../module/menuModel");
 const commentModel = require("../module/commentModel");
+const coponModel = require("../module/coponModel");
 const commentSchema = require("../validation/schema/commentSchema");
 const loginSchema = require("../validation/schema/loginSchema");
 const signupSchema = require("../validation/schema/signupSchema");
@@ -305,41 +306,68 @@ const allCommentUser = async (req, res, next) => {
 
 //insert Comment from User 
 const insertComment = async (req, res, next) => {
-  try{
-  const { userId, resId, menuId, comment, score, accept } = req.body;
-  //Check Wrong Id 
-  const ids = [userId, resId, menuId];
-  ids.forEach((id) => {
-    ValidObjectId(id);
-  });
+  try {
+    const { userId, resId, menuId, comment, score, accept } = req.body;
+    //Check Wrong Id 
+    const ids = [userId, resId, menuId];
+    ids.forEach((id) => {
+      ValidObjectId(id);
+    });
 
-  function ValidObjectId(id) {
-    if (!isValidObjectId(id)) {
-      throw { message: "Wrong Id" };
+    function ValidObjectId(id) {
+      if (!isValidObjectId(id)) {
+        throw { message: "Wrong Id" };
+      };
     };
-  };
 
-  await commentSchema.validate({ comment, score, accept });
+    await commentSchema.validate({ comment, score, accept });
 
-  const user = await userModel.findOne({ _id: userId });
-  if (!user) throw { message: "user not Found" };
+    const user = await userModel.findOne({ _id: userId });
+    if (!user) throw { message: "user not Found" };
 
-  const resturant = await resModel.findOne({ _id: resId });
-  if (!resturant) throw { message: "Resturant Not Found " };
+    const resturant = await resModel.findOne({ _id: resId });
+    if (!resturant) throw { message: "Resturant Not Found " };
 
-  const menu = await menuModel.findOne({ _id: menuId });
-  if (!menu) throw { message: "Menu Not Found " };
+    const menu = await menuModel.findOne({ _id: menuId });
+    if (!menu) throw { message: "Menu Not Found " };
 
-  await commentModel.create({userId,resId,menuId,comment,score,accept});
-   res.status(200).json({success : true, message : "Comnent insert successfully"});
-  }catch(error){
-    next({status : 400 , message : error.message || error.errors });
+    await commentModel.create({ userId, resId, menuId, comment, score, accept });
+    res.status(200).json({ success: true, message: "Comnent insert successfully" });
+  } catch (error) {
+    next({ status: 400, message: error.message || error.errors });
   };
 
 };
 
+
+
+//user Check CoponCode 
+const checkCopon = async (req, res, next) => {
+  try {
+    const { copon } = req.body;
+
+    const today = new Date();
+    const date = today.toISOString().split('T')[0];
+
+
+    const expCoponExist = await coponModel.findOne({ coponCode: copon });
+    if (!expCoponExist) throw { message: "Copon Code is Not Valid" };
+
+    if (expCoponExist.count >= expCoponExist.maxCount || expCoponExist.endTime < date) {
+      throw { message: "Coupon code is either expired or full" };
+    }
+    
+    res.status(200).json({ success: true, message: "Copon Code is Valid" });
+
+  } catch (error) {
+    next({ status: 400, message: error.message || error.errors });
+  }
+
+};
+
+
 module.exports = {
   signup, login, logout, passGen, changePassword, allmenu, deleteAcount, changeProfile,
   getProfile, basket, allpurchase, getuser, allCommentUser, alluser, forgetPassword, verifyEmail,
-  insertComment
+  insertComment, checkCopon
 };

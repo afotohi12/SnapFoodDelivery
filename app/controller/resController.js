@@ -451,17 +451,13 @@ const showExPirecopon = async (req, res, next) => {
 
     const expCoponExist = await coponModel.find({ 
         resId: id,
-        $or: [
-            {
-                endTime: { $lt: date }
-            },
-            {
-                $or: [
-                    { $expr: { $gte: ["$count", "$maxCount"] } }
-                ]
-            }
+        $and: [
+            {endTime: { $lt: date }},
+            { $expr: { $gte: ["$count", "$maxCount"] }  }
         ] 
     });
+
+    
 
     if(!expCoponExist) throw {message : "No Expire CoponCode To Show (--)"};
 

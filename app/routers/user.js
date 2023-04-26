@@ -1,5 +1,5 @@
 const {signup,login,logout,passGen,changePassword,deleteAcount,changeProfile,basket,allmenu,getProfile,getuser,
-  alluser,forgetPassword,verifyEmail,allpurchase,allCommentUser,insertComment} = require("../controller/userContoller");
+  alluser,forgetPassword,verifyEmail,allpurchase,allCommentUser,insertComment,checkCopon} = require("../controller/userContoller");
 const checkLogin = require("../validation/auth/checkLogin");
 const upload = require("../utils/multer");
 const imageValidation = require("../validation/auth/fileValidation");
@@ -24,6 +24,7 @@ router.get("/",alluser);
 router.get("/allCommentUser/:id",checkLogin,allCommentUser);
 router.post("/insertComment",checkLogin,insertComment);
 router.post("/basket",checkLogin,basket);
+router.post("/checkCopon",checkLogin,checkCopon);
 router.post("/uploadAvatar",upload.single('avatar'),imageValidation,(req, res, next) => {
       res.json({ message: "avatar updated" });
     }

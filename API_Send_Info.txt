@@ -3,19 +3,19 @@ signup :
 {
   "name" :"Alireza",
   "age" :19,
-  "family" :"Fotohi",
+  "family" :"mohammadi",
   "address" :"Iran Tehran",
-  "userName" : "afotohi759",
-  "email" : "afotohi19@gmail.com",
+  "userName" : "snap16771759",
+  "email" : "snap1677119@gmail.com",
   "password" : "Testing193",
-  "phoneNumber" : "09384337898",
+  "phoneNumber" : "09384334567",
   "confirmPassword" : "Testing193"
   
 }
 
 signin :
 {
-  "email" : "afotohi20@gmail.com",
+  "email" : "snap1677120@gmail.com",
   "password" : "Testing193"
 }
 
@@ -30,14 +30,14 @@ signup
 {
   "resName": "ghaza yaran1",
   "ownerName":  "Alireza",
-  "ownerFamily": "fotouhi",
+  "ownerFamily": "parsian",
   "resAddress": "Iran Tabriz",
   "resUserName": "ghaza1231",
   "resJavazNum": "1234323456765",
-  "email": "afotohi16771@gmail.com",
+  "email": "snap1677116771@gmail.com",
   "password": "Testing193",
   "ConfirmPassword": "Testing193",
-  "resPhoneNumber": "09653438765",
+  "resPhoneNumber": "09653123765",
   "resType" : "Fast food"
   
 }
@@ -54,7 +54,7 @@ insertMenu
 
 signin 
 {
-    "email": "afotohi16771@gmail.com",
+    "email": "snap16771@gmail.com",
   "password": "Testing193",
 }
 
@@ -73,12 +73,12 @@ add purchase
 }
 
 ------------------------------
-show from id 
+reccive all payment with resturant id 
 for example
 http://127.0.0.1:5000/resturant/allPayment/id
 
 -----------------------------
-Create CoponCode 
+Create CoponCode --alias = write anything you want 
 {
   "alias":"COPON-",
   "resId" : "642555cb61dca35f6f503d07",
@@ -91,4 +91,11 @@ Create CoponCode
   "menuId":"642585731a147b9fae83a8af",
   "category":"sonaty"
   
+}
+
+-------------------------------
+user Check CoponCode
+
+{
+  "copon":"COPON-D8LM3RRWD7KIP4X"
 }
