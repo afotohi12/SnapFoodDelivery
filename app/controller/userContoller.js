@@ -8,6 +8,7 @@ const commentSchema = require("../validation/schema/commentSchema");
 const loginSchema = require("../validation/schema/loginSchema");
 const signupSchema = require("../validation/schema/signupSchema");
 const purchesSchema = require("../validation/schema/purchesSchema");
+const addressSchema = require("../validation/schema/addressSchema");
 const { hashString, comphash, genToken } = require("../utils/encrypt");
 const yup = require('yup');
 const jwt = require("jsonwebtoken");
@@ -17,8 +18,8 @@ const passwordGenerator = require("../utils/passGen");
 //Signup User 
 const signup = async (req, res, next) => {
   try {
-    const { name, family, age, address, userName, email, password, confirmPassword, phoneNumber } = req.body;
-    await signupSchema.validate({ name, family, age, address, userName, email, password, confirmPassword, phoneNumber }, { abortEarly: false });
+    const { name, family, age,subject ,address,city, userName, email, password, confirmPassword, phoneNumber } = req.body;
+    await signupSchema.validate({ name, family, age, subject ,address,city, userName, email, password, confirmPassword, phoneNumber }, { abortEarly: false });
 
     if (password != confirmPassword) throw { message: "password Not Equel" };
 
@@ -44,8 +45,11 @@ const signup = async (req, res, next) => {
       }
     }
 
-    await userModel.create({ name, family, age, address, userName, email, phoneNumber, password: hashString(password), });
-    res.status(201).json({ success: true, message: "user created" });
+      await userModel.create({ 
+        name, family, age,
+        address :[{subject,address,city}], 
+        userName, email, phoneNumber, password: hashString(password), });
+      res.status(201).json({ success: true, message: "user created" });
   } catch (error) {
     next({ status: 400, message: error.errors || error.message });
   };
@@ -71,6 +75,61 @@ const login = async (req, res, next) => {
     next({ status: 400, message: error.errors || error.message });
   }
 };
+
+
+//add Extra user address 
+const addextraaddress = async (req, res, next) => {
+    try {
+      const {username,subject,newaddress,city} = req.body;
+      await addressSchema.validate({subject,newaddress,city}, { abortEarly: false });
+      const user = await userModel.findOne({ userName: username }, { createdAt: 0, updatedAt: 0, __v: 0 });
+      if(!user) throw {message : "User not found"}; 
+                    
+        // Add the new address
+        const address = [...user.address];
+        address.push({ subject : subject,address: newaddress, city: city });
+      
+        // Update the user with the new address
+        await userModel.updateOne(
+          { userName: username },{ $set: { address } }
+        );
+     
+      res.status(200).json({ success: true, message: "New address added successfully (`--`)" });
+    } catch (error) {
+      next({status : 400 ,message : error.errors || error.message});
+    }
+
+  };
+
+
+//delete user address 
+const deleteaddress = async (req, res, next) => {
+try {
+  // const {id}  = req.params;
+  // if(!isValidObjectId(id)) throw {message : "Invalid Address Id"}
+  // const addressS = await userModel.find({address : {$elemMatch : { _id : id}}},{address : 1});
+  // console.log(addressS);
+  // const addressIndex = addressS.address.findIndex(item => item._id === id);
+  
+  // console.log(addressIndex);
+
+}catch (error) {
+  next({status : 400 ,message : error.errors || error.message});
+}
+
+};
+
+//update user address 
+const updateaddress = async (req, res, next) => {
+  try {
+    
+    
+  } catch (error) {
+    next({status : 400 ,message : error.errors || error.message});
+  }
+  
+  };
+
 
 //Logout user 
 const logout = async (req, res, next) => {
@@ -346,5 +405,5 @@ const checkCopon = async (req, res, next) => {
 module.exports = {
   signup, login, logout, passGen, changePassword, allmenu, deleteAcount, changeProfile,
   getProfile, basket, allpurchase, getuser, allCommentUser, alluser, forgetPassword, verifyEmail,
-  insertComment, checkCopon
+  insertComment, checkCopon,addextraaddress,deleteaddress
 };

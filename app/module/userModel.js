@@ -1,11 +1,16 @@
 const { Schema, model } = require("mongoose");
+const { array } = require("../utils/multer");
 
 //ساخت اطلاعات کاربر در پایگاه داده
 const userSchema = new Schema({
     name: { type: String },
     age: { type: Number, default:19 },
     family: { type: String },
-    address: { type: String },
+    address: [{
+        subject : String,
+        address: String,
+        city: String
+      }],
     userName :{ type: String },
     email: { type: String },
     password: { type: String },

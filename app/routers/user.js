@@ -1,5 +1,5 @@
 const {signup,login,logout,passGen,changePassword,deleteAcount,changeProfile,basket,allmenu,getProfile,getuser,
-  alluser,forgetPassword,verifyEmail,allpurchase,allCommentUser,insertComment,checkCopon} = require("../controller/userContoller");
+  alluser,forgetPassword,verifyEmail,allpurchase,allCommentUser,insertComment,checkCopon,addextraaddress,deleteaddress} = require("../controller/userContoller");
 const checkLogin = require("../validation/auth/checkLogin");
 const upload = require("../utils/multer");
 const imageValidation = require("../validation/auth/fileValidation");
@@ -9,6 +9,8 @@ const router = require("express").Router();
 //مسیر های کاربر
 router.post("/signup",signup);
 router.post("/login",login);
+router.post("/addextraaddress",addextraaddress);
+router.delete("/deleteaddress/:id",deleteaddress);
 router.put("/logout",checkLogin,logout);
 router.post("/changePassword",checkLogin,changePassword);
 router.delete("/deleteAccount",checkLogin,deleteAcount);

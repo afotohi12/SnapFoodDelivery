@@ -12,6 +12,14 @@ signup :
   "confirmPassword" : "Testing193"
   
 }
+add Extra Address 
+{
+  "username" : "snap167717599",
+  "subject" : "Home",
+  "newaddress" : "Sherkat ",
+  "city": "Tabriz"
+}
+
 
 signin :
 {
