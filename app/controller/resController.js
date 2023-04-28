@@ -449,11 +449,19 @@ const showExPirecopon = async (req, res, next) => {
     // });
 
 
+    // const expCoponExist = await coponModel.find({ 
+    //     resId: id,
+    //     $and: [
+    //         {endTime: { $lt: date }},
+    //         { $expr: { $gte: ["$count", "$maxCount"] }  }
+    //     ] 
+    // });
+
+    
     const expCoponExist = await coponModel.find({ 
         resId: id,
         $and: [
-            {endTime: { $lt: date }},
-            { $expr: { $gte: ["$count", "$maxCount"] }  }
+            {$or : [{endTime: { $lt: date }}, { $expr: { $gte: ["$count", "$maxCount"] }  }]}
         ] 
     });
 

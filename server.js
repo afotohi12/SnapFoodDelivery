@@ -7,7 +7,7 @@ startApplication();
 
 
 //Connect database 
-mongoose.connect("mongodb://localhost:27017/"+process.env.App_dataBaseName, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.Address+process.env.App_dataBaseName, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log("Connected to Database");
   })
